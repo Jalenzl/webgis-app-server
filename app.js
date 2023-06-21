@@ -2,12 +2,14 @@ const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
+const bodyParser= require('body-parser');
 const logger = require('morgan');
 const cors = require('cors');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const cesiumRouter = require('./routes/cesiumRoutes');
+const isobandRouter = require('./routes/isolineRoutes')
 
 const app = express();
 
@@ -19,14 +21,17 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/api/v1/cesium', cesiumRouter);
+app.use('/api/v1/analyze', isobandRouter);
 
-const port = process.env.PORT || 3000;
+// const port = process.env.PORT || 5300;
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
