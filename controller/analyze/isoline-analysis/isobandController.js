@@ -1,17 +1,17 @@
 const { interpolate, isobands } = require("@turf/turf");
 
 exports.isoband = (req, res) => {
-    let {featureCollection, cellSize, propertyName} = req.body
+    let {centroidPoints, cellSize, propertyName} = req.body
 
-    const getIsoBand = (featureCollection, cellSize, propertyName) => {
+    const getIsoBand = (centroidPoints, cellSize, propertyName) => {
         // 作等值面
-        const interpolatGrids = interpolate(featureCollection, cellSize, {
+        const interpolatGrids = interpolate(centroidPoints, cellSize, {
             gridType: 'points',
             property: propertyName,
             units: 'degrees'
         })
         let propVal = []
-        interpolatGrids.features.amp((feature) => {
+        interpolatGrids.features.map((feature) => {
             propVal.push(feature.properties[propertyName])
         })
 
@@ -22,7 +22,7 @@ exports.isoband = (req, res) => {
         }
 
         return isobands(interpolatGrids, breaks, {
-            zProperty: propertyName,
+            zProperty:propertyName,
             commonProperties: { "fill-opacity": 0.8 },
             breaksProperties: [
                 {fill: "#e3e3ff"},
@@ -37,7 +37,7 @@ exports.isoband = (req, res) => {
         })
     }
 
-    const isoband = getIsoBand(featureCollection, cellSize, propertyName)
+    const isoband = getIsoBand(centroidPoints, cellSize, propertyName)
 
     res.status(200).json({
         status: 'success',
