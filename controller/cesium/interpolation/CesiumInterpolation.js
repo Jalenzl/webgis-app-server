@@ -48,7 +48,6 @@ class CesiumInterpolation {
     getValue(time) {
         let sampledProperty = new SampledProperty(Number);
         let num = this.propValArray[0].length;
-        console.log(num)
         let valArrQueried = [];
         if (this.interpolationAlgorithm.toUpperCase() === 'LAGRANGE') {
             sampledProperty.setInterpolationOptions({
@@ -77,7 +76,6 @@ class CesiumInterpolation {
                 sampledProperty.addSample(this.timeArray[j], this.propValArray[j][i]);
             }
             const value = sampledProperty.getValue(time);
-            console.log(value)
             valArrQueried.push(value);
         }
 
